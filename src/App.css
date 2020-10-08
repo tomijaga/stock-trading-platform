@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  background-color: rgb(21, 50, 50);
 }
 
 .App-logo {
@@ -11,6 +12,24 @@
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
+}
+
+.setPageRegions {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: 3rem 1fr 2rem;
+  color: white;
+}
+
+.bodyRegion {
+  display: grid;
+  grid-template-columns: 4rem 1fr;
+  font-size: calc(10px + 2vmin);
+  min-height: 100%;
+}
+
+.region {
+  border: 20cm solid white;
 }
 
 .App-header {

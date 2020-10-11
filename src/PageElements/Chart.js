@@ -1,111 +1,188 @@
 import ChartContainer from "../Components/ChartContainer";
-import AnyChart from "anychart-react/dist/anychart-react.min.js";
+import AnyChart from "anychart-react";
 import anychart from "anychart";
-import React, { useState, useEffect } from "react";
+import React, { Component, useState, useEffect } from "react";
+import debounce from "lodash/debounce";
+import Button from "react-bootstrap/Button";
 
-const msftDataTable = anychart.data.table();
-msftDataTable.addData(window.get_msft_daily_short_data());
-const orclDataTable = anychart.data.table();
-orclDataTable.addData(window.get_orcl_daily_short_data());
-const cscoDataTable = anychart.data.table();
-cscoDataTable.addData(window.get_csco_daily_short_data());
-const ibmDataTable = anychart.data.table();
-ibmDataTable.addData(window.get_ibm_daily_short_data());
-const chart = anychart.stock();
-const firstPlot = chart.plot(0);
-firstPlot.area(msftDataTable.mapAs({ value: 4 })).name("MSFT");
-const secondPlot = chart.plot(1);
-secondPlot
-  .splineArea(orclDataTable.mapAs({ value: 4 }))
-  .fill("#1976d2 0.65")
-  .stroke("1.5 #1976d2")
-  .name("ORCL");
-const thirdPlot = chart.plot(2);
-thirdPlot
-  .stepArea(cscoDataTable.mapAs({ value: 4 }))
-  .fill("#ef6c00 0.65")
-  .stroke("1.5 #ef6c00")
-  .name("CSCO");
-const forthPlot = chart.plot(3);
-forthPlot
-  .line(msftDataTable.mapAs({ value: 4 }))
-  .name("MSFT")
-  .tooltip(null);
-forthPlot
-  .spline(orclDataTable.mapAs({ value: 4 }))
-  .name("ORCL")
-  .tooltip(null);
-forthPlot
-  .stepLine(cscoDataTable.mapAs({ value: 4 }))
-  .name("CSCO")
-  .tooltip(null);
-chart.scroller().area(msftDataTable.mapAs({ value: 4 }));
+// const forthPlot = chart.plot(3);
+// forthPlot
+//   .line(msftDataTable.mapAs({ value: 4 }))
+//   .name("MSFT")
+//   .tooltip(null);
+// forthPlot
+//   .spline(orclDataTable.mapAs({ value: 4 }))
+//   .name("ORCL")
+//   .tooltip(null);
+// forthPlot
+//   .stepLine(cscoDataTable.mapAs({ value: 4 }))
+//   .name("CSCO")
+//   .tooltip(null);
+// //chart.scroller().area(msftDataTable.mapAs({ value: 4 }));
 
-const dateWithYearPlus = (value = 0) => {
-  let todaysDate = new Date();
-  let x = todaysDate.getDate();
-  let y = todaysDate.getMonth();
-  let z = todaysDate.getFullYear();
+// const dateWithYearPlus = (value = 0) => {
+//   let todaysDate = new Date();
+//   let x = todaysDate.getDate();
+//   let y = todaysDate.getMonth();
+//   let z = todaysDate.getFullYear();
 
-  x = x < 10 ? "0" + x : x + "";
-  y = y < 10 ? "0" + y : y + "";
+//   x = x < 10 ? "0" + x : x + "";
+//   y = y < 10 ? "0" + y : y + "";
 
-  return `${z + value}-${y}-${z}`;
-};
+//   return `${z + value}-${y}-${z}`;
+// };
+// chart.title("Stock Demo");
+// chart.plot().legend(true);
+// chart.selectRange(dateWithYearPlus(-2), dateWithYearPlus());
+// chart.container("container");
+// chart.draw();
 
-chart.selectRange(dateWithYearPlus(-2), dateWithYearPlus());
+export default class Chart extends Component {
+  constructor() {
+    super();
+    this.x = 0;
 
-const Chart = (props) => {
-  const [chartInfo, setChartInfo] = useState(0);
+    this.chartInstance = anychart.stock();
+    this.dataTable = anychart.data.table();
+    this.firstPlot = this.chartInstance.plot(0);
 
-  const createChart = (stockSymbol) => {
-    let url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${stockSymbol}&interval=1min&apikey=RNZT6A08GD0ICJQQ`;
+    this.chartInstance.splitters().normal().stroke({
+      color: "red",
+      dash: "3 4",
+      thickness: 1,
+      opacity: 0.9,
+    });
 
-    fetch(url)
-      .then((response) => response.json())
-      .then((chartInfo) => {
-        setChartInfo();
-      });
-  };
+    this.state = {
+      data: [],
+      dataIsRetrieved: false,
+    };
 
-  const getFinnhubData = () => {
+    this.getDataThrottled = debounce(this.getFinnhubData, 2000);
+  }
+
+  // createChart = (stockSymbol) => {
+  //   let url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${stockSymbol}&interval=1min&apikey=RNZT6A08GD0ICJQQ`;
+
+  //   fetch(url)
+  //     .then((response) => response.json())
+  //     .then((chartInfo) => {
+  //       setChartInfo();
+  //     });
+  // };
+  getFinnhubData = (symbol) => {
     const finnhub = require("finnhub");
 
     const api_key = finnhub.ApiClient.instance.authentications["api_key"];
-    api_key.apiKey = "btmdn7v48v6uocf2j9i0"; // Replace this
+    api_key.apiKey = "bu175nv48v6sgaqqtllg"; // Replace this
     const finnhubClient = new finnhub.DefaultApi();
 
+    let currentTime = Math.floor(Date.now() / 1000);
+    console.log("time", currentTime);
     // Stock candles
     finnhubClient.stockCandles(
-      "AAPL",
-      "D",
-      1590988249,
-      1591852249,
-      {},
+      symbol,
+      "M",
+      currentTime - 365 * 24 * 3600,
+      currentTime,
+      { adjusted: true },
       (error, data, response) => {
-        console.log(data);
+        if (error) {
+          console.log("Error", error);
+        }
+        if (data.s == "no_data") {
+          console.log("status of data:", data.s);
+          return console.log(response);
+        } else {
+          this.x = data;
+
+          this.x = this.changeDataOrder(this.x);
+
+          this.updateChart(symbol, this.x);
+        }
       }
     );
   };
 
-  console.log(getFinnhubData());
-  console.log(createChart());
+  updateChart = (symbol, data) => {
+    this.dataTable.remove();
+    this.dataTable.addData(data);
 
-  return (
-    <div>
-      <ChartContainer>
-        <AnyChart
-          instance={chart}
-          id="anychart"
-          type="column"
-          width={800}
-          height={600}
-          title="Stock Demo"
-          legend="true"
-        />
-      </ChartContainer>
-    </div>
-  );
-};
+    this.firstPlot = this.chartInstance.plot(0);
+    this.firstPlot
+      .candlestick(
+        this.dataTable.mapAs({
+          open: 1,
+          high: 2,
+          low: 3,
+          close: 4,
+          value: 5,
+        })
+      )
+      .fill("#1976d2 0.65")
+      .name(symbol);
 
-export default Chart;
+    // this.secondPlot = this.chartInstance.plot(1);
+    // this.secondPlot.column(this.dataTable.mapAs({ value: 5 })).name("Volume");
+
+    //this.chartInstance.plot(0).legend(true);
+    //this.chartInstance.selectRange("", "");
+  };
+
+  changeDataOrder = (data) => {
+    // const { , h, c, l, v, t } = data;
+
+    let newOrder = [];
+
+    console.log("the parsed data", data);
+
+    for (let size = 0; size < data["c"].length; size++) {
+      let array = [
+        data["t"][size] * 1000,
+        data["o"][size].toFixed(2),
+        data["h"][size].toFixed(2),
+        data["l"][size].toFixed(2),
+        data["c"][size].toFixed(2),
+        data["v"][size].toFixed(2),
+      ];
+
+      //console.log("Each Array", array);
+
+      newOrder.push(array);
+    }
+    // console.log("New order", newOrder);
+    return newOrder;
+  };
+
+  getDataAndUpdateChart = () => {
+    this.getFinnhubData();
+  };
+
+  componentDidMount() {
+    let symbol = sessionStorage.getItem("stockSymbol");
+    if (symbol !== null) {
+      this.getFinnhubData(symbol);
+    } else {
+      this.getFinnhubData("BA");
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <Button type="button" onClick={console.log("CLicked")}>
+          Warning
+        </Button>{" "}
+        <ChartContainer id="container">
+          <AnyChart
+            instance={this.chartInstance}
+            id="anychart"
+            type="column"
+            width={600}
+            height={400}
+          />
+        </ChartContainer>
+      </div>
+    );
+  }
+}

@@ -7,8 +7,7 @@ class IconWithInfoTip extends Component {
   constructor() {
     super();
     this.state = {
-      coverBackground: "none",
-      selected: false,
+      display: "hidden",
     };
   }
 
@@ -48,12 +47,6 @@ class IconWithInfoTip extends Component {
   };
 
   displayTooltip = (display) => {
-    if (!this.state.selected) {
-      this.setState({
-        coverBackground: "rgba(135, 206, 250, 0.8)",
-        selected: true,
-      });
-    }
     if (display == "visible") {
       return (
         <InfoTip position={this.props.infoTipPosition} info={this.props.info} />
@@ -62,30 +55,26 @@ class IconWithInfoTip extends Component {
   };
 
   onHoverOut = (event) => {
-    if (this.state.selected) {
-      this.setState({
-        display: "hidden",
-        coverBackground: "none",
-        selected: false,
-      });
-    }
+    // if (this.state.selected) {
+    this.setState({
+      display: "hidden",
+    });
+    // }
 
     // console.log(this.state);
   };
 
   render() {
     return (
-      <div>
+      <div style={{ width: "100%", height: "100%" }}>
         <div style={this.divStyle(this.props.infoTipPosition)}>
-          <Center style={{ backgroundColor: this.state.coverBackground }}>
-            <Icon
-              height={this.props.iconHeight}
-              width={this.props.iconHeight}
-              show={this.onHover}
-              hide={this.onHoverOut}
-              url={this.props.url}
-            />
-          </Center>
+          <Icon
+            height={this.props.iconHeight}
+            width={this.props.iconHeight}
+            show={this.onHover}
+            hide={this.onHoverOut}
+            url={this.props.url}
+          />
 
           {this.displayTooltip(this.state.display)}
         </div>

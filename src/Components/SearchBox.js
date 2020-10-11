@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 
 class SearchBox extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.inputStyle = {
       width: "100%",
       background: "azure",
@@ -16,6 +16,7 @@ class SearchBox extends Component {
       top: "0%",
     };
   }
+
   render() {
     return (
       <div>

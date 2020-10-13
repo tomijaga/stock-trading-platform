@@ -167,11 +167,15 @@ export default class Chart extends Component {
     }
   }
 
+  someBTNOnClick(e) {
+    console.log("Button Click");
+  }
+
   render() {
     return (
       <div>
-        <Button type="button" onClick={console.log("CLicked")}>
-          Warning
+        <Button id="someBTN" type="button" onClick={this.someBTNOnClick}>
+          Warnings
         </Button>{" "}
         <ChartContainer id="container">
           <AnyChart

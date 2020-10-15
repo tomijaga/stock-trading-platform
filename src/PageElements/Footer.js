@@ -1,6 +1,6 @@
 import React from "react";
 import Time from "../Components/Time";
-import DateComponent from "../Components/Date";
+import DateDiv from "../Components/DateDiv";
 
 const Footer = () => (
   <div
@@ -9,12 +9,14 @@ const Footer = () => (
       justifyContent: "flex-end",
       background: "rgb(10, 20, 30)",
       height: "2rem",
-      width: "calc(100vw-20px)",
-      padding: "0px 20px",
+      width: `calc(100vw-${30 * 2}pt)`,
+      padding: "0px 20pt",
       alignItems: "center",
       fontSize: "1rem",
     }}
   >
+    <DateDiv />
+    <span style={{ padding: "0px 10pt" }}></span>
     <Time />
   </div>
 );

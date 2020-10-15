@@ -1,13 +1,13 @@
 import React from "react";
-import Chart from "../PageElements/Chart";
+import ChartTab from "../PageElements/ChartTab";
 import PageContainer from "./PageContainer";
+import NewsTab from "../PageElements/NewsTab";
 
-export const StocksPage = () => (
+const StocksPage = () => (
   <PageContainer>
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: "1fr 1fr",
         gridTemplateRows: "1fr 1fr",
         height: "100%",
         width: "100%",
@@ -19,22 +19,11 @@ export const StocksPage = () => (
           height: "100%",
           width: "100%",
           border: " 0.5pt solid white",
-          gridColumn: "1 / span 2",
         }}
       >
-        <Chart style={{ height: "100%", width: "100%" }} />
-        <p style={{ color: "azure" }}>1</p>
+        <ChartTab style={{ height: "100%", width: "100%" }} />
       </div>
-      <div
-        style={{
-          backgroundColor: "transparent",
-          height: "100%",
-          width: "100%",
-          border: " 0.5pt solid white",
-        }}
-      >
-        <p style={{ color: "azure" }}>2</p>
-      </div>
+
       <div
         style={{
           backgroundColor: "tansparent",
@@ -43,7 +32,7 @@ export const StocksPage = () => (
           border: " 0.5pt solid white",
         }}
       >
-        <p style={{ color: "azure" }}>3</p>
+        <NewsTab newsFrom={"TSLA"}></NewsTab>
       </div>
     </div>{" "}
   </PageContainer>

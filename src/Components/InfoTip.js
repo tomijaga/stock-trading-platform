@@ -1,10 +1,8 @@
-import React, { Component } from "react";
+import React from "react";
 import "./InfoTip.css";
 
-export default class InfoTip extends Component {
-  super() {}
-
-  setFlex = (value = "right") => {
+const InfoTip = (props) => {
+  const setFlex = (value = "right") => {
     let flex;
     switch (value) {
       case "down":
@@ -30,7 +28,7 @@ export default class InfoTip extends Component {
     };
   };
 
-  arrowDirection = (value = "right") => {
+  const arrowDirection = (value = "right") => {
     let direction;
     switch (value) {
       case "down":
@@ -52,16 +50,16 @@ export default class InfoTip extends Component {
     return direction;
   };
 
-  render() {
-    return (
-      <div style={{ left: "50px", position: "absolute" }}>
-        <div className="onTop" style={this.setFlex(this.props.position)}>
-          <div className={this.arrowDirection(this.props.position)} />
-          <div className="info">
-            <p>{this.props.info}</p>
-          </div>
+  return (
+    <div style={{ left: "50px", position: "absolute" }}>
+      <div className="onTop" style={setFlex(props.position)}>
+        <div className={arrowDirection(props.position)} />
+        <div className="info">
+          <p>{props.info}</p>
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
+
+export default InfoTip;

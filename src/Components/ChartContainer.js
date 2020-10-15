@@ -1,21 +1,13 @@
-import React, { Component } from 'react';
+import React from "react";
 
+const ChartContainer = (props) => {
+  return (
+    <div>
+      <div />
+      <div />
+      {props.children}
+    </div>
+  );
+};
 
-export default class ChartContainer extends Component {
-	constructor(props) {
-		super(props);
-		this.style = {
-
-		}
-	}
-
-	render() {
-		return (
-			<div>
-				<div />
-				<div />
-				{this.props.children}
-			</div>
-		)
-	}
-}
+export default ChartContainer;

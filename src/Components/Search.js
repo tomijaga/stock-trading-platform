@@ -1,43 +1,29 @@
 import StockLibrary from "../Classes/StockLibrary";
-import React, { Component } from "react";
+import React, { useState } from "react";
 import SearchItems from "./SearchItems";
 import SearchBox from "./SearchBox";
 import "./Search.css";
+import ErrorBoundary from "./ErrorBoundary";
 
-class Search extends Component {
-  constructor() {
-    super();
-    this.state = {
-      searchValue: "",
-      filteredStockSymbols: [],
-    };
-    this.onSearchChange = this.onSearchChange.bind(this);
-  }
+const Search = (props) => {
+  const [searchValue, setSearchValue] = useState("");
 
-  async setSearch(value) {
-    await this.setState({
-      searchValue: value,
-    });
-    console.log("searchValue", this.state.searchValue);
+  const setSearch = async function (value) {
+    await setSearchValue(value);
 
-    // this.setArrayThrottled();
-  }
+    console.log("searchValue", searchValue);
+  };
 
-  onSearchChange(event) {
-    this.setSearch(event.target.value);
-  }
+  const onSearchChange = (event) => {
+    setSearch(event.target.value);
+  };
 
-  render() {
-    return (
-      <div className="search">
-        <SearchBox search={this.onSearchChange} />
-        <SearchItems
-          searchValue={this.state.searchValue}
-          height={this.props.height}
-        />
-      </div>
-    );
-  }
-}
+  return (
+    <div className="search">
+      <SearchBox search={onSearchChange} />
+      <SearchItems searchValue={searchValue} height={props.height} />
+    </div>
+  );
+};
 
 export default Search;

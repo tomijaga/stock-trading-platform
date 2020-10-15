@@ -11,16 +11,17 @@ export default class Header extends Component {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(100px,auto)) ",
+            gridTemplateColumns: "repeat(auto-fit, minmax(100pt,auto)) ",
             minHeight: "100%",
             padding: " 0px 2rem",
             background: "rgb(10, 30, 40)",
             alignItems: "center",
+            width: `calc(100vw-${2 * 2}rem)`,
           }}
         >
           <div style={{ display: "flex", alignItems: "center" }}>
             <img src="" alt="Brand Logo" />
-            <h2 style={{ margin: "0px" }}>RoboTrade</h2>
+            <h2 style={{ margin: "0pt" }}>RoboTrade</h2>
           </div>
 
           <div

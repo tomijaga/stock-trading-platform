@@ -1,17 +1,11 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import InfoTip from "./InfoTip";
 import Icon from "./Icon";
-import Center from "./Center";
 
-class IconWithInfoTip extends Component {
-  constructor() {
-    super();
-    this.state = {
-      display: "hidden",
-    };
-  }
+const IconWithInfoTip = (props) => {
+  const [display, setDisplay] = useState("hidden");
 
-  divStyle = (value) => {
+  const divStyle = (value) => {
     let flex;
     switch ((value = "right")) {
       case "up":
@@ -38,49 +32,36 @@ class IconWithInfoTip extends Component {
     };
   };
 
-  onHover = (event) => {
-    this.setState({
-      display: "visible",
-    });
+  const onHover = (event) => {
+    setDisplay("visible");
     console.log("!");
-    // console.log(this.state);
   };
 
-  displayTooltip = (display) => {
+  const displayTooltip = () => {
     if (display == "visible") {
-      return (
-        <InfoTip position={this.props.infoTipPosition} info={this.props.info} />
-      );
+      return <InfoTip position={props.infoTipPosition} info={props.info} />;
     }
   };
 
-  onHoverOut = (event) => {
-    // if (this.state.selected) {
-    this.setState({
-      display: "hidden",
-    });
-    // }
-
-    // console.log(this.state);
+  const onHoverOut = (event) => {
+    setDisplay("hidden");
   };
 
-  render() {
-    return (
-      <div style={{ width: "100%", height: "100%" }}>
-        <div style={this.divStyle(this.props.infoTipPosition)}>
-          <Icon
-            height={this.props.iconHeight}
-            width={this.props.iconHeight}
-            show={this.onHover}
-            hide={this.onHoverOut}
-            url={this.props.url}
-          />
+  return (
+    <div style={{ width: "100%", height: "100%" }}>
+      <div style={divStyle(props.infoTipPosition)}>
+        <Icon
+          height={props.iconHeight}
+          width={props.iconHeight}
+          show={onHover}
+          hide={onHoverOut}
+          url={props.url}
+        />
 
-          {this.displayTooltip(this.state.display)}
-        </div>
+        {displayTooltip()}
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default IconWithInfoTip;
